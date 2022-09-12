@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fgp-application
+  labels:
+    app: fgp-application
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: fgp-application
+  template:
+    metadata:
+      labels:
+        app: fgp-application
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - k3s-1
+                - k3s-2
+      containers:
+      - name: fgp-application
+        image: registry.future-grid.com/fgp/fgp-app:21.28.1-bug-fgpb-1120-033.df246d9
+        args: ["/apps/", "deployment/deployment-pg.xml", "local_app"]
+        resources:
+          requests: 
+           memory: "20Gi"
+           cpu: "1000m"
+          limits:
+           memory: "22Gi"
+           cpu: "2000m"
+        env:
+        - name: JVM_GC
+          value: G1
+        - name: k8s_namespace
+          value: future-grid
+        - name: k8s_service_server
+          value: fgp-app-discovery
+        - name: hazelcast_port
+          value: "6701"
+        - name: HAZELCAST_MIN_NODES
+          value: "4"
+        - name: JVM_MX
+          value: "12G"
+        - name: JVM_MOH
+          value: "8G"
+        - name: max_onheap_memory_pct
+          value: "85"
+        - name: cache_onheap_heuristic_pct
+          value: "60"
+        - name: cache_offheap_pct
+          value: "50"
+        - name: cache_offheap_heuristic_pct
+          value: "50"
+        - name: JMX_HOST
+          value: localhost
+        - name: JMX_PORT
+          value: "7099"
+        volumeMounts:
+        - name: app-config
+          mountPath: /apps/local
+        - name: app-deployment
+          mountPath: /apps/deployment
+      volumes:
+      - name: app-config
+        configMap:
+          name: fgp-local-app 
+      - name: app-deployment
+        configMap:
+          name: fgp-app-deployment
+      imagePullSecrets:
+      - name: fgp-images

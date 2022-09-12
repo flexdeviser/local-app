@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<deploymentDescriptor name="local_app">
+	<app name="local_app" application="config/local/app.xml" tag="22.09.01" environment="mac_studio">
+		<datasource name="local" type="postgresql">
+			<parameter name="driver">org.postgresql.ds.PGSimpleDataSource</parameter>
+			<parameter name="max_pool">10</parameter>
+			<parameter name="min_pool">1</parameter>
+			<parameter name="password">password</parameter>
+			<parameter name="username">postgres</parameter>
+			<parameter name="status_interval">60</parameter>
+			<parameter name="url">jdbc:postgresql://localhost:5432/postgres?currentSchema=public</parameter>
+		</datasource>
+		<parameter name="hazelcast_interface">localhost</parameter>
+		<parameter name="hazelcast_members">localhost</parameter>
+		<parameter name="hazelcast_port">6701</parameter>
+	</app>
+	<parameter name="partition_start_date">2022-09-01</parameter>  
+	<parameter name="TIMEZONE">Australia/Melbourne</parameter>  
+</deploymentDescriptor>
+

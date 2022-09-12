@@ -1,0 +1,11 @@
+<datastore>
+    <persistence modelType="stock_price_store" project="local_app" package="com.futuregrid.local" version="1.0" stored="true" audit="false" timeSeries="true">
+        <column name="device_key" type="devicekey" primaryKey="truye"/>
+        <column name="time_key" type="timestamptz" timeZone="US/Eastern" secondaryKey="true"/>
+        <column name="open" type="float" nullable="false"/>
+        <column name="high" type="float" nullable="false"/>
+        <column name="low" type="float" nullable="false"/>
+        <column name="close" type="float" nullable="false"/>
+        <column name="volume" type="float" nullable="false"/>
+    </persistence>
+</datastore>

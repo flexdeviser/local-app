@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<datastore name="local_app" version="20.10.1">
+    <datasources default="local">
+        <datasource name="local" description="pg store"/>
+    </datasources>
+
+    <device name="stock">
+        <timeseries type="periodic" modelType="stock_price_store" connectionName="local" name="stockePriceStore" frequency="300" tableName="stock_price">
+            <parameter name="bucket_size">300</parameter>
+            <parameter name="partition_size">day</parameter>
+            <parameter name="partition_time_zone">Australia/Melbourne</parameter>
+            <parameter name="data_recent_hold_seconds">86400</parameter>
+            <parameter name="hold_changes_min_ms">2000</parameter>
+            <parameter name="hold_changes_max_ms">5000</parameter>
+            <parameter name="queue_min_size">1000</parameter>
+            <parameter name="queue_max_size">3000</parameter>
+            <parameter name="queue_max_timeout_ms">10000</parameter>
+        </timeseries>
+        <!-- stock reads https://alpha-vantage.p.rapidapi.com/query -->
+        <stream name="stock_read" input="stock_read_raw" threadCount="2">
+            <action language="JavaScript" source="stock.js" function="stock_read"/>
+        </stream>
+    </device>
+    <include name="models" file="models.xml"/>
+
+</datastore>

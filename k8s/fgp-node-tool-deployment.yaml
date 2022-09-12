@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: fgp-schema-tool
+  labels:
+    app: fgp-schema-tool
+spec:
+  schedule: "* * 30 2 *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: fgp-schema-tool
+            image: registry.future-grid.com/fgp/fgp-node-tool:21.28.1-bug-fgpb-1120-033.df246d9
+            args: ["--deploymentPath", "/apps/", "--deploymentFile", "deployment/deployment-pg.xml", "--app", "local_app", "--tool", "createSchema"]
+            volumeMounts:
+            - name: app-config
+              mountPath: /apps/local
+            - name: app-deployment
+              mountPath: /apps/deployment
+          volumes:
+          - name: app-config
+            configMap:
+              name: fgp-local-app 
+          - name: app-deployment
+            configMap:
+              name: fgp-app-deployment
+          imagePullSecrets:
+          - name: fgp-images
+          restartPolicy: Never
+        
